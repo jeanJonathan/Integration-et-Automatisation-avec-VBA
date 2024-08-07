@@ -92,4 +92,35 @@ End Sub
 Sub ShowIncidentForm()
     UserFormIncidents.Show
 End Sub
+'Procedure pour forcer la validation en temps reel, evitant toutes erreur de datas dans la bd en terme de structure
+
+Private Sub tMoteurId_Exit(ByVal Cancel As MSForms.ReturnBoolean)
+    If Not IsNumeric(Me.tMoteurId.Value) Then
+        MsgBox "Veuillez entrer un ID de moteur valide.", vbExclamation
+        Me.tMoteurId.SetFocus
+    End If
+End Sub
+
+
+Private Sub tDateIncident_Exit(ByVal Cancel As MSForms.ReturnBoolean)
+    If Not IsDate(Me.tDateIncident.Value) Then
+        MsgBox "Veuillez entrer une date valide, Referez vous a la base de donnees.", vbExclamation
+        Me.tDateIncident.SetFocus
+    End If
+End Sub
+
+Private Sub tStatus_Exit(ByVal Cancel As MSForms.ReturnBoolean)
+    If Not IsNumeric(Me.tMoteurId.Value) Then
+        MsgBox "Veuillez entrer un ID de moteur valide.", vbExclamation
+        Me.tMoteurId.SetFocus
+    End If
+End Sub
+
+Private Sub tDescription_Exit(ByVal Cancel As MSForms.ReturnBoolean)
+    If Me.tDescription.Value = "" Then
+        MsgBox "Veuillez entrer une description valide.", vbExclamation
+        Me.tDescription.SetFocus
+    End If
+End Sub
+
 
