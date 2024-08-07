@@ -1,35 +1,35 @@
 Attribute VB_Name = "Module1"
 'Connexion a la bd et affichage des datas
-'On veut creer une macro VBA qui se connecte ï¿½ votre base de donnï¿½es, exï¿½cute les requï¿½tes SQL nï¿½cessaires et importe les donnï¿½es dans Excel.
+'On veut creer une macro VBA qui se connecte à votre base de données, exécute les requêtes SQL nécessaires et importe les données dans Excel.
 Sub extractionDonnees()
 
     Dim conn As Object, rs As Object, strSql1 As String, strSql2 As String
-    ' conn : Variable pour l'objet de connexion ï¿½ la base de donnï¿½es.
-    ' rs : Variable pour l'objet Recordset qui contiendra les rï¿½sultats de la requï¿½te SQL.
-    ' strSql1, strSql2 : Variables pour stocker les requï¿½tes SQL sous forme de chaï¿½nes de caractï¿½res.
+    ' conn : Variable pour l'objet de connexion à la base de données.
+    ' rs : Variable pour l'objet Recordset qui contiendra les résultats de la requête SQL.
+    ' strSql1, strSql2 : Variables pour stocker les requêtes SQL sous forme de chaînes de caractères.
     
-    ' Crï¿½ation de la Connexion et Ouverture de la connexion
+    ' Création de la Connexion et Ouverture de la connexion
     Set conn = CreateObject("ADODB.Connection")
     conn.Open "DSN=MysqlTestSource"
-    ' Set conn = CreateObject("ADODB.Connection") : Crï¿½e une nouvelle instance d'un objet de connexion ADODB.
-    ' conn.Open "DSN=MysqlTestSource" : Ouvre la connexion ï¿½ la base de donnï¿½es MySQL en utilisant le DSN (Data Source Name) configurï¿½ sous le nom "MysqlTestSource".
+    ' Set conn = CreateObject("ADODB.Connection") : Crée une nouvelle instance d'un objet de connexion ADODB.
+    ' conn.Open "DSN=MysqlTestSource" : Ouvre la connexion à la base de données MySQL en utilisant le DSN (Data Source Name) configuré sous le nom "MysqlTestSource".
     
-    ' Requï¿½tes SQL
+    ' Requêtes SQL
     strSql1 = "SELECT date_emission, montant, etat, description FROM factures;"
     strSql2 = "SELECT date_paiement, montant, mode_paiement FROM paiements;"
     strSQL3 = "SELECT date_intervention, type_intervention, cout, temps_passe, cout_pieces FROM interventions;"
     
-    ' Crï¿½ation d'une instance d'un objet Recordset
+    ' Création d'une instance d'un objet Recordset
     Set rs = CreateObject("ADODB.Recordset")
     
-    ' Exï¿½cute la requï¿½te SQL contenue dans strSql1 et place les rï¿½sultats dans l'objet rs
+    ' Exécute la requête SQL contenue dans strSql1 et place les résultats dans l'objet rs
     Set rs = conn.Execute(strSql1)
     
     ' Copie des datas
     ThisWorkbook.Worksheets("Feuil1").Range("B2").CopyFromRecordset rs
-    ' ThisWorkbook permet d'accï¿½der directement ï¿½ ce classeur Excel sans avoir besoin de spï¿½cifier son nom.
-    ' Chaque objet Worksheet reprï¿½sente une feuille de calcul individuelle dans le classeur.
-    'Range pour spï¿½cifier la cellule en question dans la feuille de calcul
+    ' ThisWorkbook permet d'accéder directement à ce classeur Excel sans avoir besoin de spécifier son nom.
+    ' Chaque objet Worksheet représente une feuille de calcul individuelle dans le classeur.
+    'Range pour spécifier la cellule en question dans la feuille de calcul
 
     Set rs = conn.Execute(strSql2)
     ThisWorkbook.Worksheets("Feuil1").Range("F2").CopyFromRecordset rs
@@ -39,21 +39,21 @@ Sub extractionDonnees()
     
     ' Fermeture
     rs.Close ' Ferme l'objet Recordset.
-    conn.Close ' Ferme la connexion ï¿½ la base de donnï¿½es.
-    Set rs = Nothing ' Libï¿½re l'objet Recordset de la mï¿½moire.
-    Set conn = Nothing ' Libï¿½re l'objet de connexion de la mï¿½moire.
+    conn.Close ' Ferme la connexion à la base de données.
+    Set rs = Nothing ' Libère l'objet Recordset de la mémoire.
+    Set conn = Nothing ' Libère l'objet de connexion de la mémoire.
     
 End Sub
 
 'Automatisation des calculs des moyennes et les totaux des datas
-'Une procedure pour calculer les totaux et les moyennes nï¿½cessaires pour les rapports.
+'Une procedure pour calculer les totaux et les moyennes nécessaires pour les rapports.
 Sub calculTotauxEtMoy()
     Dim ws As Worksheet
     Set ws = ThisWorkbook.Sheets("Feuil1")
 
     'Montant totals des factures et moyennes
     ws.Range("D22").Value = "Total Montant factures"
-    'Formula est la methode qui permet de dï¿½finir une formule Excel.
+    'Formula est la methode qui permet de définir une formule Excel.
     'ws.Range("D22").Formula = "=SUM(D2:D" & ws.Cells(ws.Rows.Count, "C").End(xlUp).Row & ")"
     ws.Range("C22").Value = WorksheetFunction.Sum(ws.Range(ws.Range("C2"), ws.Range("C21")))
     
@@ -81,54 +81,54 @@ End Sub
 
 
 'Mise en forme des datas
-'On veut formater les donnï¿½es pour qu'elles soient plus lisibles et prï¿½sentables.
+'On veut formater les données pour qu'elles soient plus lisibles et présentables.
 Sub formatageRapport()
-    ' Dï¿½clare une variable pour la feuille de calcul
+    ' Déclare une variable pour la feuille de calcul
     Dim ws As Worksheet
-    ' Assigne la feuille de calcul "Feuil1" ï¿½ la variable ws
+    ' Assigne la feuille de calcul "Feuil1" à la variable ws
     Set ws = ThisWorkbook.Sheets("Feuil1")
     
-    ' Dï¿½finition des titres pour les sections
-    ws.Range("B1:E1").Merge ' Fusionne les cellules de B1 ï¿½ E1 pour crï¿½er un seul titre
-    ws.Range("B1").Value = "Factures" ' Dï¿½finit le titre pour les factures
+    ' Définition des titres pour les sections
+    ws.Range("B1:E1").Merge ' Fusionne les cellules de B1 à E1 pour créer un seul titre
+    ws.Range("B1").Value = "Factures" ' Définit le titre pour les factures
     ws.Range("B1").Font.Bold = True ' Met le titre en gras
     ws.Range("B1").Interior.Color = RGB(169, 208, 142) ' Applique une couleur de fond verte claire
     
-    ws.Range("F1:H1").Merge ' Fusionne les cellules de F1 ï¿½ H1 pour crï¿½er un seul titre
-    ws.Range("F1").Value = "Paiements" ' Dï¿½finit le titre pour les paiements
+    ws.Range("F1:H1").Merge ' Fusionne les cellules de F1 à H1 pour créer un seul titre
+    ws.Range("F1").Value = "Paiements" ' Définit le titre pour les paiements
     ws.Range("F1").Font.Bold = True ' Met le titre en gras
     ws.Range("F1").Interior.Color = RGB(142, 169, 219) ' Applique une couleur de fond bleue claire
     
-    ws.Range("J1:N1").Merge ' Fusionne les cellules de J1 ï¿½ N1 pour crï¿½er un seul titre
-    ws.Range("J1").Value = "Interventions" ' Dï¿½finit le titre pour les interventions
+    ws.Range("J1:N1").Merge ' Fusionne les cellules de J1 à N1 pour créer un seul titre
+    ws.Range("J1").Value = "Interventions" ' Définit le titre pour les interventions
     ws.Range("J1").Font.Bold = True ' Met le titre en gras
     ws.Range("J1").Interior.Color = RGB(255, 192, 0) ' Applique une couleur de fond orange claire
     
-    ' Formatage des en-tï¿½tes de colonnes
-    ws.Range("B2:E2").Font.Bold = True ' Met les en-tï¿½tes de colonnes en gras pour la section Factures
-    ws.Range("F2:H2").Font.Bold = True ' Met les en-tï¿½tes de colonnes en gras pour la section Paiements
-    ws.Range("J2:N2").Font.Bold = True ' Met les en-tï¿½tes de colonnes en gras pour la section Interventions
+    ' Formatage des en-têtes de colonnes
+    ws.Range("B2:E2").Font.Bold = True ' Met les en-têtes de colonnes en gras pour la section Factures
+    ws.Range("F2:H2").Font.Bold = True ' Met les en-têtes de colonnes en gras pour la section Paiements
+    ws.Range("J2:N2").Font.Bold = True ' Met les en-têtes de colonnes en gras pour la section Interventions
     
     ' Application des bordures
     With ws.Range("B1:E21").Borders(xlEdgeBottom)
         .LineStyle = xlContinuous ' Ligne continue
         .ColorIndex = 0 ' Couleur noire
         .TintAndShade = 0 ' Pas de nuance
-        .Weight = xlThin ' ï¿½paisseur fine
+        .Weight = xlThin ' Épaisseur fine
     End With
     
     With ws.Range("F1:H21").Borders(xlEdgeBottom)
         .LineStyle = xlContinuous ' Ligne continue
         .ColorIndex = 0 ' Couleur noire
         .TintAndShade = 0 ' Pas de nuance
-        .Weight = xlThin ' ï¿½paisseur fine
+        .Weight = xlThin ' Épaisseur fine
     End With
     
     With ws.Range("J1:N21").Borders(xlEdgeBottom)
         .LineStyle = xlContinuous ' Ligne continue
         .ColorIndex = 0 ' Couleur noire
         .TintAndShade = 0 ' Pas de nuance
-        .Weight = xlThin ' ï¿½paisseur fine
+        .Weight = xlThin ' Épaisseur fine
     End With
     
     ' Formatage des totaux et moyennes
@@ -141,51 +141,61 @@ Sub formatageRapport()
     ws.Range("L22:O23").Font.Bold = True ' Met les totaux et moyennes en gras
     ws.Range("L22:O23").Interior.Color = RGB(255, 255, 153) ' Applique une couleur de fond jaune claire
     
-    ' Ajustement de la largeur des colonnes pour une meilleure lisibilitï¿½
+    ' Ajustement de la largeur des colonnes pour une meilleure lisibilité
     ws.Columns("B:N").AutoFit ' Ajuste automatiquement la largeur des colonnes pour s'adapter au contenu
 End Sub
 
 'Automatisation de l'Envoi d'Emails
-'On veut crï¿½er une macro pour envoyer automatiquement les rapports par email en utilisant Outlook.
+'On veut créer une macro pour envoyer automatiquement les rapports par email en utilisant Outlook.
 ' Automatisation de l'Envoi d'Emails
-' On veut crï¿½er une macro pour envoyer automatiquement les rapports par email en utilisant Outlook.
+' On veut créer une macro pour envoyer automatiquement les rapports par email en utilisant Outlook.
 Sub EnvoieEmailavecRapport()
     Dim OutApp As Object
     Dim OutMail As Object
     Dim ws As Worksheet
     Set ws = ThisWorkbook.Sheets("Feuil1")
 
-    ' Crï¿½er une instance d'Outlook
+    ' Créer une instance d'Outlook
     On Error Resume Next
     Set OutApp = CreateObject("Outlook.Application")
     Set OutMail = OutApp.CreateItem(0)
     On Error GoTo 0
 
     If OutApp Is Nothing Then
-        MsgBox "Outlook n'est pas installï¿½ ou configurï¿½ correctement sur votre ordinateur.", vbExclamation
+        MsgBox "Outlook n'est pas installé ou configuré correctement sur votre ordinateur.", vbExclamation
         Exit Sub
     End If
 
-    ' Dï¿½finir le contenu de l'email
+    ' Définir le contenu de l'email
     On Error Resume Next
     With OutMail
         .To = "jean-jonathan.koffi@etud.univ-pau.fr" ' Adresse email du destinataire
         .CC = "" ' Adresse(s) en copie
-        .BCC = "" ' Adresse(s) en copie cachï¿½e
+        .BCC = "" ' Adresse(s) en copie cachée
         .Subject = "Rapport de Maintenance et Facturation" ' Sujet de l'email
-        .Body = "Veuillez trouver ci-joint le rapport de maintenance et facturation." ' Corps de l'email
+        .Body = "Bonjour, " & vbCrLf & vbCrLf & _
+                "Veuillez trouver ci-joint le rapport de maintenance et facturation." & vbCrLf & vbCrLf & _
+                "Jean-Jonathan KOFFI" & vbCrLf & _
+                "Alternant Data Analyst" & vbCrLf & _
+                "jean-jonathan.koffi@safran-group.com" & vbCrLf & _
+                "+33 7 83 74 77 65" & vbCrLf & _
+                "Avenue du 1er Mai" & vbCrLf & _
+                "40220 TARNOS" & vbCrLf & _
+                "www.safran-helicopter-engines.com" & vbCrLf & _
+                "https://www.linkedin.com/in/jean-jonathan-koffi-b54b1a216/"
         .Attachments.Add ThisWorkbook.FullName ' Attacher le fichier Excel actuel
         .Send ' Envoyer l'email
     End With
+
     On Error GoTo 0
 
     If Err.Number <> 0 Then
-        MsgBox "Une erreur s'est produite lors de l'envoi de l'email. Veuillez vï¿½rifier votre configuration Outlook.", vbExclamation
+        MsgBox "Une erreur s'est produite lors de l'envoi de l'email. Veuillez vérifier votre configuration Outlook.", vbExclamation
     Else
-        MsgBox "Email envoyï¿½ avec succï¿½s.", vbInformation
+        MsgBox "Email envoyé avec succès.", vbInformation
     End If
 
-    ' Libï¿½rer les objets
+    ' Libérer les objets
     Set OutMail = Nothing
     Set OutApp = Nothing
 End Sub
