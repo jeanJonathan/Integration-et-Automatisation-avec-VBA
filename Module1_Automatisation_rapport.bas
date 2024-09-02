@@ -1,6 +1,6 @@
 Attribute VB_Name = "Module1"
 'Connexion a la bd et affichage des datas
-'On veut creer une macro VBA qui se connecte à votre base de données, exécute les requêtes SQL nécessaires et importe les données dans Excel.
+'On veut creer une macro VBA qui se connecte à la base de données, exécute les requêtes SQL nécessaires et importe les données dans Excel.
 Sub extractionDonnees()
 
     Dim conn As Object, rs As Object, strSql1 As String, strSql2 As String
@@ -217,8 +217,8 @@ Sub EnvoieEmailavecRapport()
                 ReadEnvVariable("VILLE") & vbCrLf & _
                 ReadEnvVariable("SITE_ENTREPRISE") & vbCrLf & _
                 ReadEnvVariable("LIEN_LINKEDIN")
-        .Attachments.Add ThisWorkbook.FullName ' Attacher le fichier Excel actuel
-        .Send ' Envoyer l'email
+        .Attachments.Add ThisWorkbook.FullName ' On attache le fichier Excel actuel
+        .Send ' Envoie de l'email
     End With
 
     On Error GoTo 0
