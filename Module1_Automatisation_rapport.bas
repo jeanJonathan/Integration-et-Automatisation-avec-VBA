@@ -145,6 +145,40 @@ Sub formatageRapport()
     ws.Columns("B:N").AutoFit ' Ajuste automatiquement la largeur des colonnes pour s'adapter au contenu
 End Sub
 
+'Fonction pour lire le fichier de conf .env
+Function ReadEnvVariable(key As String) As String
+    Dim fso As Object
+    Dim envFile As Object
+    Dim line As String
+    Dim delimiterPosition As Integer
+    Dim variableName As String
+    Dim variableValue As String
+    
+    ' Ouvre le fichier .env
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set envFile = fso.OpenTextFile(ThisWorkbook.Path & "\.env")
+    
+    ' Parcourt chaque ligne du fichier .env
+    Do Until envFile.AtEndOfStream
+        line = envFile.ReadLine
+        delimiterPosition = InStr(1, line, "=")
+        If delimiterPosition > 0 Then
+            variableName = Trim(Left(line, delimiterPosition - 1))
+            variableValue = Trim(Mid(line, delimiterPosition + 1))
+            
+            If variableName = key Then
+                ReadEnvVariable = variableValue
+                Exit Do
+            End If
+        End If
+    Loop
+    
+    ' Ferme le fichier
+    envFile.Close
+    Set envFile = Nothing
+    Set fso = Nothing
+End Function
+
 'Automatisation de l'Envoi d'Emails
 'On veut créer une macro pour envoyer automatiquement les rapports par email en utilisant Outlook.
 ' Automatisation de l'Envoi d'Emails
@@ -154,7 +188,7 @@ Sub EnvoieEmailavecRapport()
     Dim OutMail As Object
     Dim ws As Worksheet
     Set ws = ThisWorkbook.Sheets("Feuil1")
-
+    
     ' Créer une instance d'Outlook
     On Error Resume Next
     Set OutApp = CreateObject("Outlook.Application")
@@ -169,7 +203,7 @@ Sub EnvoieEmailavecRapport()
     ' Définir le contenu de l'email
     On Error Resume Next
     With OutMail
-        .To = "jean-jonathan.koffi@etud.univ-pau.fr" ' Adresse email du destinataire
+        .To = ReadEnvVariable("EMAIL_DESTINATAIRE") ' Adresse email du destinataire
         .CC = "" ' Adresse(s) en copie
         .BCC = "" ' Adresse(s) en copie cachée
         .Subject = "Rapport de Maintenance et Facturation" ' Sujet de l'email
@@ -177,12 +211,12 @@ Sub EnvoieEmailavecRapport()
                 "Veuillez trouver ci-joint le rapport de maintenance et facturation." & vbCrLf & vbCrLf & _
                 "Jean-Jonathan KOFFI" & vbCrLf & _
                 "Alternant Data Analyst" & vbCrLf & _
-                "jean-jonathan@test.com" & vbCrLf & _
-                "+33 7 83 74 77 65" & vbCrLf & _
-                "Avenue du 1er Mai" & vbCrLf & _
-                "40220 TARNOS" & vbCrLf & _
-                "www.safran-helicopter-engines.com" & vbCrLf & _
-                "https://www.linkedin.com/in/jean-jonathan-koffi-b54b1a216/"
+                ReadEnvVariable("EMAIL_SIGNATURE") & vbCrLf & _
+                ReadEnvVariable("TELEPHONE") & vbCrLf & _
+                ReadEnvVariable("ADRESSE") & vbCrLf & _
+                ReadEnvVariable("VILLE") & vbCrLf & _
+                ReadEnvVariable("SITE_ENTREPRISE") & vbCrLf & _
+                ReadEnvVariable("LIEN_LINKEDIN")
         .Attachments.Add ThisWorkbook.FullName ' Attacher le fichier Excel actuel
         .Send ' Envoyer l'email
     End With
